@@ -1,0 +1,26 @@
+
+div.form
+{
+    display: block;
+    text-align: center;
+    vertical-align: top;
+}
+
+form
+{
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    
+}
+
+
+.CenterHeader {
+  text-align: center;
+}
+
+.submit {
+ top-margin: 15px;
+ padding-top: 20px; 
+}
