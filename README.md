@@ -1,6 +1,6 @@
 # Car Insurance Classify Claim vs No Claim
 
-### Flask App that deploys a model that predicts probability of a car insurance policy incurring a claim (the data dictionary for the dataset did not specify what the timeline for this target variable was i.e. whether claim after a month, year, week etc. 
+### Flask App that deploys a model that predicts probability of a car insurance policy incurring a claim (the data dictionary for the dataset did not specify what the timeline for this target variable was i.e. whether claim after a month, year, week etc. )
 
 ## Home Page Where User can Query Loans
 ![home page](https://github.com/sethweiland/car_insurance_classify_claim_vs_no_claim/blob/master/Screen%20Shot%202019-12-03%20at%203.01.41%20PM.png)
