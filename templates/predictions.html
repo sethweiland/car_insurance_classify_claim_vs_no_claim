@@ -5,7 +5,7 @@
 </head>
 <body>
 <h1 class="CenterHeader">
-Claim Predictions for Loans in your Query
+Claim Predictions for Sample of Loans in your Query
 </h1>
 
 {{ preds_html|safe }}
@@ -13,6 +13,9 @@ Claim Predictions for Loans in your Query
 <div class="form">
 <form action="{{url_for('home')}}" method="post">
 <input type="submit" value="Run Another Query" class="submit">
+</form>
+<form action="{{url_for('sent_email')}}" method="post">
+<input type="submit" value="Send all predictions as CSV" class="submit">                              
 </form>
 </div>
 

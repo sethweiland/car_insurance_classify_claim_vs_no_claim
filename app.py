@@ -1,17 +1,32 @@
 import numpy as np
 from flask import Flask, request, jsonify, session
 from flask_session import Session
+from flask_mail import Mail, Message
 import flask
 import sqlite3
 import pandas as pd
 import pickle
 from prepare_data import prep_for_modeling
+import os
 
 with open("best_lgbm_claim_classifier.pkl", "rb") as f:
    model = pickle.load(f)
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+
+mail_settings = {
+    "MAIL_SERVER": 'smtp.gmail.com',
+    "MAIL_PORT": 465,
+    "MAIL_USE_TLS": False,
+    "MAIL_USE_SSL": True,
+    "MAIL_USERNAME": os.environ['EMAIL_USER'],
+    "MAIL_PASSWORD": os.environ['EMAIL_PASSWORD']
+}
+
+app.config.update(mail_settings)
+mail = Mail(app)
+
 
 @app.route("/", methods=["GET", "POST"]) 
 def home():
@@ -26,7 +41,7 @@ def return_query():
     policy_ids = df["ID"].values.copy()
     session['user_policy_ids'] = policy_ids
     sample_to_display = df.iloc[:10]
-    html_display = sample_to_display.to_html(header=True)
+    html_display = sample_to_display.to_html(header=True, classes="blueTable")
     
     return flask.render_template("query_options.html", html_table = html_display)
 
@@ -43,10 +58,18 @@ def classify_policys():
     df_preds = pd.concat([policy_ids_series, preds_df], axis=1)
     df_preds.columns = ["Policy_ID ", " Probability No Claim ", " Probability Claim "]
     df_preds = df_preds.round(3)
-    preds_html = df_preds.to_html(header=True)
+    df_preds_sample = df_preds.sample(10)
+    preds_html = df_preds_sample.to_html(header=True, classes="blueTable")
+    df_preds.to_csv("predictions.csv")
     return flask.render_template("predictions.html", preds_html = preds_html)
 
-    
+@app.route("/send_email", methods=["POST","GET"])
+def sent_email():
+    msg = Message("Insurance Policy Claim Predictions", sender=app.config.get("MAIL_USERNAME"),recipients=["sethweiland@g.ucla.edu"], body="Here are the insurnace policy claim predictions you requested")
+    with app.open_resource("predictions.csv") as predicts:
+        msg.attach("predictions.csv","text/csv", predicts.read())
+    mail.send(msg) 
+    return "Message Sent" 
 
 
 if __name__=="__main__":
